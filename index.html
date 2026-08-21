@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#F6F7FB" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Reta Journey" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <title>Reta Journey</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --surface: rgba(255,255,255,.92);
+      --surface-solid: #ffffff;
+      --text: #16181d;
+      --muted: #7b8190;
+      --line: #e9ebf1;
+      --accent: #5b5ce2;
+      --accent-dark: #4849c6;
+      --accent-soft: #eeefff;
+      --green: #36a269;
+      --green-soft: #eaf8f0;
+      --orange: #e9923a;
+      --orange-soft: #fff4e8;
+      --red: #d75b5b;
+      --red-soft: #fff0f0;
+      --shadow: 0 14px 40px rgba(27, 33, 52, .09);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html { background: var(--bg); }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(91,92,226,.12), transparent 32%),
+        linear-gradient(180deg, #fafbff 0%, var(--bg) 34%);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", sans-serif;
+      padding-bottom: calc(102px + env(safe-area-inset-bottom));
+    }
+
+    button, input, select, textarea { font: inherit; }
+
+    .app-shell { max-width: 760px; margin: 0 auto; }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: calc(18px + env(safe-area-inset-top)) 20px 12px;
+    }
+
+    .brand-wrap { display: flex; align-items: center; gap: 12px; }
+    .app-icon {
+      width: 44px; height: 44px; border-radius: 14px;
+      display: grid; place-items: center;
+      background: linear-gradient(145deg, #6f70f4, #4d4ed0);
+      color: white;
+      box-shadow: 0 10px 22px rgba(91,92,226,.28);
+      font-size: 21px;
+    }
+    .eyebrow { font-size: 12px; color: var(--muted); font-weight: 700; letter-spacing: .02em; }
+    .brand { margin: 2px 0 0; font-size: 24px; letter-spacing: -.7px; line-height: 1.05; }
+
+    .avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      border: 1px solid var(--line); background: var(--surface-solid);
+      display: grid; place-items: center; font-weight: 800; color: var(--accent);
+      box-shadow: 0 8px 20px rgba(31,37,55,.07);
+    }
+
+    main { padding: 8px 16px 28px; }
+
+    .view { display: none; animation: fade .2s ease; }
+    .view.active { display: block; }
+    @keyframes fade { from { opacity: .35; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #5c5de2 0%, #7b73ef 100%);
+      color: white;
+      border-radius: var(--radius-xl);
+      padding: 22px;
+      box-shadow: 0 18px 42px rgba(91,92,226,.28);
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 190px; height: 190px; border-radius: 50%;
+      right: -55px; top: -70px;
+      background: rgba(255,255,255,.12);
+    }
+    .hero-kicker { font-size: 13px; opacity: .8; font-weight: 700; }
+    .hero h2 { font-size: 28px; margin: 7px 0 8px; letter-spacing: -.8px; }
+    .hero p { margin: 0; max-width: 82%; font-size: 14px; line-height: 1.45; opacity: .84; }
+    .hero-actions { display: flex; gap: 10px; margin-top: 20px; position: relative; z-index: 1; }
+
+    .btn {
+      border: 0;
+      border-radius: 15px;
+      padding: 13px 16px;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      transition: transform .15s ease, opacity .15s ease;
+    }
+    .btn:active { transform: scale(.98); }
+    .btn-light { background: white; color: var(--accent-dark); }
+    .btn-glass { background: rgba(255,255,255,.16); color: white; border: 1px solid rgba(255,255,255,.22); }
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-secondary { background: #f0f1f6; color: var(--text); }
+    .btn-danger { background: var(--red-soft); color: var(--red); }
+
+    .section-title {
+      display: flex; align-items: center; justify-content: space-between;
+      margin: 24px 4px 11px;
+    }
+    .section-title h2 { margin: 0; font-size: 19px; letter-spacing: -.35px; }
+    .section-title span { color: var(--muted); font-size: 12px; }
+
+    .stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid rgba(233,235,241,.95);
+      border-radius: 20px;
+      padding: 15px;
+      box-shadow: 0 10px 28px rgba(32,37,52,.05);
+      backdrop-filter: blur(12px);
+    }
+    .stat-icon {
+      width: 33px; height: 33px; border-radius: 11px;
+      display: grid; place-items: center; margin-bottom: 12px;
+      font-size: 15px;
+    }
+    .purple { background: var(--accent-soft); color: var(--accent); }
+    .green { background: var(--green-soft); color: var(--green); }
+    .orange { background: var(--orange-soft); color: var(--orange); }
+    .stat-label { color: var(--muted); font-size: 11px; line-height: 1.25; }
+    .stat-value { font-size: 19px; font-weight: 850; margin-top: 4px; letter-spacing: -.45px; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid rgba(233,235,241,.95);
+      border-radius: var(--radius-lg);
+      padding: 17px;
+      box-shadow: 0 10px 30px rgba(32,37,52,.055);
+      backdrop-filter: blur(14px);
+      margin-top: 12px;
+    }
+    .card h2 { margin: 0 0 13px; font-size: 20px; letter-spacing: -.4px; }
+    .card-subtitle { color: var(--muted); font-size: 13px; line-height: 1.45; margin: -6px 0 14px; }
+
+    .chart-wrap { background: #fbfbfe; border-radius: 18px; padding: 10px 8px 4px; border: 1px solid #f0f1f5; }
+    canvas { width: 100%; height: 210px; display: block; }
+
+    .notice {
+      display: flex; gap: 11px;
+      background: #fff9ec;
+      border: 1px solid #f7e4b4;
+      border-radius: 17px;
+      padding: 13px;
+      color: #8a6628;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .notice-icon { font-size: 16px; padding-top: 1px; }
+
+    .form-section { margin-top: 18px; }
+    .form-section-title { font-size: 13px; color: var(--muted); font-weight: 800; margin: 0 2px 9px; text-transform: uppercase; letter-spacing: .05em; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+    .field { background: #fafbfe; border: 1px solid var(--line); border-radius: 16px; padding: 10px 12px; }
+    .field.full { grid-column: 1 / -1; }
+    label { display: block; font-size: 11px; color: var(--muted); font-weight: 800; margin-bottom: 5px; }
+    input, select, textarea {
+      width: 100%;
+      border: 0;
+      padding: 2px 0;
+      background: transparent;
+      color: var(--text);
+      outline: none;
+      font-size: 15px;
+    }
+    textarea { min-height: 90px; resize: vertical; line-height: 1.45; }
+    select { appearance: none; }
+    .form-actions { display: flex; gap: 10px; margin-top: 16px; }
+
+    .search-wrap {
+      display: flex; align-items: center; gap: 9px;
+      background: #f0f1f6; border-radius: 14px; padding: 11px 13px;
+      margin-bottom: 10px;
+    }
+    .search-wrap span { color: var(--muted); }
+    .search-wrap input { font-size: 14px; }
+
+    .entry {
+      background: var(--surface-solid);
+      border: 1px solid var(--line);
+      border-radius: 19px;
+      padding: 15px;
+      margin-top: 10px;
+    }
+    .entry-head { display: flex; justify-content: space-between; gap: 12px; }
+    .entry-title { font-weight: 850; letter-spacing: -.2px; }
+    .meta { color: var(--muted); font-size: 12px; margin-top: 4px; line-height: 1.4; }
+    .chip-row { margin-top: 9px; }
+    .chip {
+      display: inline-flex; align-items: center;
+      background: #f3f4f8; color: #575d6b;
+      border-radius: 999px; padding: 6px 9px;
+      font-size: 11px; margin: 4px 5px 0 0;
+    }
+    .entry p { font-size: 13px; line-height: 1.5; margin: 11px 0 0; }
+    .entry-actions { display: flex; gap: 8px; margin-top: 12px; }
+    .entry-actions .btn { padding: 9px 12px; font-size: 12px; }
+    .empty { text-align: center; color: var(--muted); padding: 34px 10px; font-size: 14px; }
+
+    .data-row {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--line);
+    }
+    .data-row:last-child { border-bottom: 0; }
+    .data-copy strong { display: block; font-size: 14px; }
+    .data-copy span { display: block; font-size: 12px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+
+    .tabs {
+      position: fixed;
+      left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bottom));
+      z-index: 10;
+      max-width: 720px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(4,1fr);
+      background: rgba(255,255,255,.9);
+      backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid rgba(229,231,239,.95);
+      border-radius: 24px;
+      padding: 7px;
+      box-shadow: 0 14px 36px rgba(24,29,46,.15);
+    }
+    .tab {
+      border: 0; background: transparent; border-radius: 17px;
+      padding: 8px 4px 7px; color: var(--muted); font-size: 10px;
+      font-weight: 750; cursor: pointer;
+    }
+    .tab-icon { display: block; font-size: 18px; margin-bottom: 3px; }
+    .tab.active { background: var(--accent-soft); color: var(--accent); }
+
+    @media (max-width: 560px) {
+      .stats { grid-template-columns: repeat(2,1fr); }
+      .stats .stat-card:last-child { grid-column: 1 / -1; }
+      .form-grid { grid-template-columns: 1fr; }
+      .field.full { grid-column: auto; }
+      .hero h2 { font-size: 25px; }
+      .hero p { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <div class="brand-wrap">
+      <div class="app-icon">✦</div>
+      <div>
+        <div class="eyebrow">PERSONAL HEALTH JOURNAL</div>
+        <h1 class="brand">Reta Journey</h1>
+      </div>
+    </div>
+    <div class="avatar">RJ</div>
+  </header>
+
+  <main>
+    <section id="dashboard" class="view active">
+      <div class="hero">
+        <div class="hero-kicker">TODAY’S CHECK-IN</div>
+        <h2>Track your journey with confidence.</h2>
+        <p>Keep dosage records, wellness notes, symptoms, and progress together in one private place.</p>
+        <div class="hero-actions">
+          <button class="btn btn-light" onclick="showView('log')">＋ New entry</button>
+          <button class="btn btn-glass" onclick="showView('history')">View history</button>
+        </div>
+      </div>
+
+      <div class="section-title">
+        <h2>Overview</h2>
+        <span>Updated automatically</span>
+      </div>
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-icon purple">◉</div>
+          <div class="stat-label">Last logged dose</div>
+          <div class="stat-value" id="lastDose">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green">↘</div>
+          <div class="stat-label">Latest weight</div>
+          <div class="stat-value" id="latestWeight">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon orange">☰</div>
+          <div class="stat-label">Total entries</div>
+          <div class="stat-value" id="totalEntries">0</div>
+        </div>
+      </div>
+
+      <div class="section-title">
+        <h2>Weight trend</h2>
+        <span>Latest 20 records</span>
+      </div>
+      <div class="card">
+        <div class="chart-wrap"><canvas id="weightChart" width="700" height="220"></canvas></div>
+      </div>
+
+      <div class="card">
+        <div class="notice">
+          <div class="notice-icon">⚠︎</div>
+          <div>This app is for personal recordkeeping only. Retatrutide is investigational and this app does not provide medical advice, dosing instructions, or treatment recommendations.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="log" class="view">
+      <div class="section-title">
+        <h2>New entry</h2>
+        <span>Private to this device</span>
+      </div>
+      <div class="card">
+        <form id="entryForm">
+          <div class="form-section">
+            <div class="form-section-title">Dose details</div>
+            <div class="form-grid">
+              <div class="field"><label for="date">Date</label><input id="date" type="date" required /></div>
+              <div class="field"><label for="time">Time</label><input id="time" type="time" /></div>
+              <div class="field"><label for="dose">Dose amount</label><input id="dose" type="number" min="0" step="0.01" placeholder="Optional" /></div>
+              <div class="field"><label for="unit">Unit</label><select id="unit"><option value="mg">mg</option><option value="mcg">mcg</option><option value="units">units</option><option value="mL">mL</option></select></div>
+              <div class="field full"><label for="site">Administration site</label><select id="site"><option value="">Not recorded</option><option>Abdomen</option><option>Thigh</option><option>Upper arm</option><option>Other</option></select></div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-title">Progress</div>
+            <div class="form-grid">
+              <div class="field"><label for="weight">Weight</label><input id="weight" type="number" min="0" step="0.1" placeholder="Optional" /></div>
+              <div class="field"><label for="weightUnit">Weight unit</label><select id="weightUnit"><option>lb</option><option>kg</option></select></div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-title">How you feel</div>
+            <div class="form-grid">
+              <div class="field"><label for="mood">Mood</label><select id="mood"><option value="">Not recorded</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+              <div class="field"><label for="energy">Energy</label><select id="energy"><option value="">Not recorded</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+              <div class="field full"><label for="appetite">Appetite</label><select id="appetite"><option value="">Not recorded</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+              <div class="field full"><label for="symptoms">Symptoms or side effects</label><input id="symptoms" placeholder="Add anything you noticed" /></div>
+              <div class="field full"><label for="journal">Journal notes</label><textarea id="journal" placeholder="Meals, sleep, activity, mood, or anything worth remembering..."></textarea></div>
+            </div>
+          </div>
+
+          <input type="hidden" id="editingId" />
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save entry</button>
+            <button type="button" class="btn btn-secondary" onclick="resetForm()">Clear</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section id="history" class="view">
+      <div class="section-title">
+        <h2>History</h2>
+        <span>Your complete timeline</span>
+      </div>
+      <div class="card">
+        <div class="search-wrap"><span>⌕</span><input id="search" placeholder="Search entries" oninput="renderHistory()" /></div>
+        <div id="historyList"></div>
+      </div>
+    </section>
+
+    <section id="data" class="view">
+      <div class="section-title">
+        <h2>Data & privacy</h2>
+        <span>Local-first storage</span>
+      </div>
+      <div class="card">
+        <div class="data-row">
+          <div class="data-copy"><strong>Export spreadsheet</strong><span>Download all records as a CSV file.</span></div>
+          <button class="btn btn-secondary" onclick="exportCSV()">Export</button>
+        </div>
+        <div class="data-row">
+          <div class="data-copy"><strong>Create backup</strong><span>Save a JSON copy of all app data.</span></div>
+          <button class="btn btn-secondary" onclick="exportJSON()">Backup</button>
+        </div>
+        <div class="data-row">
+          <div class="data-copy"><strong>Restore backup</strong><span>Import a previously saved JSON file.</span></div>
+          <label class="btn btn-secondary" style="cursor:pointer;">Import<input type="file" accept=".json" onchange="importJSON(event)" style="display:none" /></label>
+        </div>
+        <div class="data-row">
+          <div class="data-copy"><strong>Delete all records</strong><span>This permanently clears saved data from this browser.</span></div>
+          <button class="btn btn-danger" onclick="clearAll()">Delete</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Add to your iPhone</h2>
+        <p class="card-subtitle">Open the hosted app in Safari, tap Share, then choose <strong>Add to Home Screen</strong>.</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<nav class="tabs">
+  <button class="tab active" data-view="dashboard" onclick="showView('dashboard')"><span class="tab-icon">⌂</span>Home</button>
+  <button class="tab" data-view="log" onclick="showView('log')"><span class="tab-icon">＋</span>Log</button>
+  <button class="tab" data-view="history" onclick="showView('history')"><span class="tab-icon">◷</span>History</button>
+  <button class="tab" data-view="data" onclick="showView('data')"><span class="tab-icon">☁︎</span>Data</button>
+</nav>
+
+<script>
+const KEY = 'retaJourneyEntriesV1';
+let entries = JSON.parse(localStorage.getItem(KEY) || '[]');
+
+function save() {
+  localStorage.setItem(KEY, JSON.stringify(entries));
+  renderAll();
+}
+
+function todayDefaults() {
+  const now = new Date();
+  document.getElementById('date').value = now.toISOString().slice(0,10);
+  document.getElementById('time').value = now.toTimeString().slice(0,5);
+}
+
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === id));
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.view === id));
+  if (id === 'history') renderHistory();
+  if (id === 'dashboard') renderDashboard();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+document.getElementById('entryForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const id = document.getElementById('editingId').value || crypto.randomUUID();
+  const entry = {
+    id,
+    date: document.getElementById('date').value,
+    time: document.getElementById('time').value,
+    dose: document.getElementById('dose').value,
+    unit: document.getElementById('unit').value,
+    site: document.getElementById('site').value,
+    weight: document.getElementById('weight').value,
+    weightUnit: document.getElementById('weightUnit').value,
+    mood: document.getElementById('mood').value,
+    energy: document.getElementById('energy').value,
+    appetite: document.getElementById('appetite').value,
+    symptoms: document.getElementById('symptoms').value.trim(),
+    journal: document.getElementById('journal').value.trim(),
+    updatedAt: new Date().toISOString()
+  };
+  const idx = entries.findIndex(x => x.id === id);
+  if (idx >= 0) entries[idx] = entry; else entries.push(entry);
+  save();
+  resetForm();
+  showView('history');
+});
+
+function resetForm() {
+  document.getElementById('entryForm').reset();
+  document.getElementById('editingId').value = '';
+  todayDefaults();
+}
+
+function editEntry(id) {
+  const e = entries.find(x => x.id === id);
+  if (!e) return;
+  Object.keys(e).forEach(k => {
+    const el = document.getElementById(k);
+    if (el) el.value = e[k] ?? '';
+  });
+  document.getElementById('editingId').value = id;
+  showView('log');
+}
+
+function deleteEntry(id) {
+  if (!confirm('Delete this entry?')) return;
+  entries = entries.filter(x => x.id !== id);
+  save();
+}
+
+function sortedEntries() {
+  return [...entries].sort((a,b) => ((b.date||'') + (b.time||'')).localeCompare((a.date||'') + (a.time||'')));
+}
+
+function renderHistory() {
+  const q = (document.getElementById('search').value || '').toLowerCase();
+  const list = document.getElementById('historyList');
+  const filtered = sortedEntries().filter(e => JSON.stringify(e).toLowerCase().includes(q));
+  if (!filtered.length) {
+    list.innerHTML = '<div class="empty">No matching entries yet.</div>';
+    return;
+  }
+  list.innerHTML = filtered.map(e => `
+    <div class="entry">
+      <div class="entry-head">
+        <div>
+          <div class="entry-title">${escapeHTML(formatDate(e.date))}${e.time ? ' · ' + escapeHTML(e.time) : ''}</div>
+          <div class="meta">${e.dose ? `Retatrutide · ${escapeHTML(e.dose)} ${escapeHTML(e.unit)}` : 'No dose recorded'}</div>
+        </div>
+      </div>
+      <div class="chip-row">
+        ${e.weight ? `<span class="chip">Weight ${escapeHTML(e.weight)} ${escapeHTML(e.weightUnit)}</span>` : ''}
+        ${e.site ? `<span class="chip">${escapeHTML(e.site)}</span>` : ''}
+        ${e.mood ? `<span class="chip">Mood ${escapeHTML(e.mood)}/5</span>` : ''}
+        ${e.energy ? `<span class="chip">Energy ${escapeHTML(e.energy)}/5</span>` : ''}
+        ${e.appetite ? `<span class="chip">Appetite ${escapeHTML(e.appetite)}/5</span>` : ''}
+      </div>
+      ${e.symptoms ? `<p><strong>Symptoms:</strong> ${escapeHTML(e.symptoms)}</p>` : ''}
+      ${e.journal ? `<p>${escapeHTML(e.journal).replace(/\n/g,'<br>')}</p>` : ''}
+      <div class="entry-actions">
+        <button class="btn btn-secondary" onclick="editEntry('${e.id}')">Edit</button>
+        <button class="btn btn-danger" onclick="deleteEntry('${e.id}')">Delete</button>
+      </div>
+    </div>`).join('');
+}
+
+function renderDashboard() {
+  const sorted = sortedEntries();
+  const lastDose = sorted.find(e => e.dose);
+  const lastWeight = sorted.find(e => e.weight);
+  document.getElementById('lastDose').textContent = lastDose ? `${lastDose.dose} ${lastDose.unit}` : '—';
+  document.getElementById('latestWeight').textContent = lastWeight ? `${lastWeight.weight} ${lastWeight.weightUnit}` : '—';
+  document.getElementById('totalEntries').textContent = entries.length;
+  drawWeightChart();
+}
+
+function drawWeightChart() {
+  const canvas = document.getElementById('weightChart');
+  const ctx = canvas.getContext('2d');
+  const data = [...entries].filter(e => e.weight).sort((a,b) => (a.date||'').localeCompare(b.date||'')).slice(-20);
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = '#fbfbfe'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  if (data.length < 2) {
+    ctx.fillStyle = '#8a90a0'; ctx.font = '15px -apple-system';
+    ctx.textAlign = 'center'; ctx.fillText('Add two weight entries to see your trend.', canvas.width/2, canvas.height/2);
+    return;
+  }
+  const vals = data.map(d => Number(d.weight));
+  const min = Math.min(...vals), max = Math.max(...vals);
+  const pad = 38, span = Math.max(max-min, 1);
+  ctx.strokeStyle = '#eceef4'; ctx.lineWidth = 1;
+  for (let i=0;i<4;i++) {
+    const y = pad + i*(canvas.height-2*pad)/3;
+    ctx.beginPath(); ctx.moveTo(pad,y); ctx.lineTo(canvas.width-pad,y); ctx.stroke();
+  }
+  const points = data.map((d,i) => ({
+    x: pad + i*(canvas.width-2*pad)/(data.length-1),
+    y: canvas.height-pad - ((Number(d.weight)-min)/span)*(canvas.height-2*pad)
+  }));
+  const grad = ctx.createLinearGradient(0,pad,0,canvas.height-pad);
+  grad.addColorStop(0,'rgba(91,92,226,.22)');
+  grad.addColorStop(1,'rgba(91,92,226,0)');
+  ctx.beginPath();
+  ctx.moveTo(points[0].x, canvas.height-pad);
+  points.forEach((p,i) => i===0 ? ctx.lineTo(p.x,p.y) : ctx.lineTo(p.x,p.y));
+  ctx.lineTo(points[points.length-1].x, canvas.height-pad);
+  ctx.closePath(); ctx.fillStyle = grad; ctx.fill();
+
+  ctx.strokeStyle = '#5b5ce2'; ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.beginPath(); points.forEach((p,i) => i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y)); ctx.stroke();
+
+  ctx.fillStyle = '#ffffff'; ctx.strokeStyle = '#5b5ce2'; ctx.lineWidth = 3;
+  points.forEach(p => { ctx.beginPath(); ctx.arc(p.x,p.y,5,0,Math.PI*2); ctx.fill(); ctx.stroke(); });
+
+  ctx.fillStyle = '#8a90a0'; ctx.font='12px -apple-system'; ctx.textAlign='left';
+  ctx.fillText(`${max.toFixed(1)}`, 5, pad+4);
+  ctx.fillText(`${min.toFixed(1)}`, 5, canvas.height-pad+4);
+}
+
+function exportCSV() {
+  if (!entries.length) return alert('No entries to export.');
+  const headers = ['date','time','dose','unit','site','weight','weightUnit','mood','energy','appetite','symptoms','journal'];
+  const esc = v => `"${String(v ?? '').replace(/"/g,'""')}"`;
+  const csv = [headers.join(','), ...sortedEntries().map(e => headers.map(h => esc(e[h])).join(','))].join('\n');
+  downloadBlob(csv, 'reta-journey.csv', 'text/csv');
+}
+
+function exportJSON() {
+  downloadBlob(JSON.stringify(entries,null,2), 'reta-journey-backup.json', 'application/json');
+}
+
+function importJSON(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const parsed = JSON.parse(reader.result);
+      if (!Array.isArray(parsed)) throw new Error();
+      entries = parsed; save(); alert('Backup imported.');
+    } catch { alert('That file is not a valid backup.'); }
+  };
+  reader.readAsText(file);
+}
+
+function clearAll() {
+  if (!confirm('Permanently delete every saved entry on this device?')) return;
+  entries = []; save();
+}
+
+function downloadBlob(content, filename, type) {
+  const blob = new Blob([content], {type});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function formatDate(s) {
+  if (!s) return 'No date';
+  return new Date(s + 'T12:00:00').toLocaleDateString(undefined, {month:'short', day:'numeric', year:'numeric'});
+}
+
+function escapeHTML(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+}
+
+function renderAll() { renderDashboard(); renderHistory(); }
+
+todayDefaults();
+renderAll();
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js').catch(() => {});
+}
+</script>
+</body>
+</html>

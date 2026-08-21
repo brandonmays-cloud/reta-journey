@@ -1,0 +1,17 @@
+{
+  "name": "Reta Journey",
+  "short_name": "Reta Journey",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f3f4f6",
+  "theme_color": "#111827",
+  "description": "Private Retatrutide journey and wellness tracker.",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
