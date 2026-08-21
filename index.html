@@ -338,7 +338,7 @@
               <div class="field"><label for="time">Time</label><input id="time" type="time" /></div>
               <div class="field"><label for="dose">Dose amount</label><input id="dose" type="number" min="0" step="0.01" placeholder="Optional" /></div>
               <div class="field"><label for="unit">Unit</label><select id="unit"><option value="mg">mg</option><option value="mcg">mcg</option><option value="units">units</option><option value="mL">mL</option></select></div>
-              <div class="field full"><label for="site">Administration site</label><select id="site"><option value="">Not recorded</option><option>Abdomen</option><option>Thigh</option><option>Upper arm</option><option>Other</option></select></div>
+              <div class="field full"><label for="site">Administration site</label><select id="site"><option value="">Not recorded</option><option>Left Abdomen</option><option>Right Abdomen</option><option>Left Thigh</option><option>Right Thigh</option><option>Left Upper Arm</option><option>Right Upper Arm</option><option>Other</option></select></div>
             </div>
           </div>
 
@@ -353,9 +353,9 @@
           <div class="form-section">
             <div class="form-section-title">How you feel</div>
             <div class="form-grid">
-              <div class="field"><label for="mood">Mood</label><select id="mood"><option value="">Not recorded</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
-              <div class="field"><label for="energy">Energy</label><select id="energy"><option value="">Not recorded</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
-              <div class="field full"><label for="appetite">Appetite</label><select id="appetite"><option value="">Not recorded</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+              <div class="field"><label for="mood">Mood · 1–10 (10 highest)</label><select id="mood"><option value="">Not recorded</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></div>
+              <div class="field"><label for="energy">Energy · 1–10 (10 highest)</label><select id="energy"><option value="">Not recorded</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></div>
+              <div class="field full"><label for="appetite">Appetite · 1–10 (10 highest)</label><select id="appetite"><option value="">Not recorded</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></div>
               <div class="field full"><label for="symptoms">Symptoms or side effects</label><input id="symptoms" placeholder="Add anything you noticed" /></div>
               <div class="field full"><label for="journal">Journal notes</label><textarea id="journal" placeholder="Meals, sleep, activity, mood, or anything worth remembering..."></textarea></div>
             </div>
@@ -515,9 +515,9 @@ function renderHistory() {
       <div class="chip-row">
         ${e.weight ? `<span class="chip">Weight ${escapeHTML(e.weight)} ${escapeHTML(e.weightUnit)}</span>` : ''}
         ${e.site ? `<span class="chip">${escapeHTML(e.site)}</span>` : ''}
-        ${e.mood ? `<span class="chip">Mood ${escapeHTML(e.mood)}/5</span>` : ''}
-        ${e.energy ? `<span class="chip">Energy ${escapeHTML(e.energy)}/5</span>` : ''}
-        ${e.appetite ? `<span class="chip">Appetite ${escapeHTML(e.appetite)}/5</span>` : ''}
+        ${e.mood ? `<span class="chip">Mood ${escapeHTML(e.mood)}/10</span>` : ''}
+        ${e.energy ? `<span class="chip">Energy ${escapeHTML(e.energy)}/10</span>` : ''}
+        ${e.appetite ? `<span class="chip">Appetite ${escapeHTML(e.appetite)}/10</span>` : ''}
       </div>
       ${e.symptoms ? `<p><strong>Symptoms:</strong> ${escapeHTML(e.symptoms)}</p>` : ''}
       ${e.journal ? `<p>${escapeHTML(e.journal).replace(/\n/g,'<br>')}</p>` : ''}
